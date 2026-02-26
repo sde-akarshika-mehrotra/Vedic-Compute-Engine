@@ -28,7 +28,7 @@ def load_user(id):
 with app.app_context():
     db.create_all()
 
-# ---- ROUTES ----
+# --- ROUTES ---
 
 @app.route('/')
 def home():

@@ -1,4 +1,3 @@
-# core.py
 class VedicMathEngine:
     """
     Core Arithmetic Logic Unit using Nikhilam Sutra.

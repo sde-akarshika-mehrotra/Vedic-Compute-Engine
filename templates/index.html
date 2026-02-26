@@ -1,330 +1,193 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Login - Vedic Bank</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vedic FinCompute</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
-
-<style>
-    /* --- GLOBAL VARIABLES & RESET --- */
-:root {
-    --bg-main: #121212;
-    --card-bg: #1c1c1e;
-    --input-bg: #1e1e24;
-    --purple: #c69b25;
-    --text-light: #ffffff;
-    --text-muted: #8e8e93;
-    --yellow: #ffea00;
-    --teal: #00e5ff;
-    --primary: #6e5502; /* For backward compatibility with your JS */
-}
-
-body {
-    background-color: var(--bg-main);
-    color: var(--text-light);
-    font-family: 'Inter', sans-serif;
-    margin: 0;
-    padding: 20px;
-    display: flex;
-    justify-content: center;
-}
-
-.app-container {
-    width: 100%;
-    max-width: 420px; /* Mobile-first design inspired by your reference */
-}
-
-/* --- HEADER --- */
-.header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 30px;
-}
-
-.logo-section {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.logo-icon {
-    background: linear-gradient(135deg, #d8ad37, #ef7918);
-    color: white;
-    width: 40px;
-    height: 40px;
-    border-radius: 10px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 24px;
-    font-weight: bold;
-    box-shadow: 0 4px 15px rgba(155, 154, 255, 0.3);
-}
-
-.logo-text h1 {
-    font-size: 1.2rem;
-    margin: 0 0 2px 0;
-    font-weight: 600;
-}
-
-.logo-text h1 span {
-    color: var(--purple);
-}
-
-.logo-text p {
-    font-size: 0.55rem;
-    color: var(--text-muted);
-    margin: 0;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-}
-
-.agent-link {
-    color: var(--purple);
-    text-decoration: none;
-    font-size: 0.8rem;
-    font-weight: 500;
-}
-
-/* --- FORM ELEMENTS --- */
-.calculator-form {
-    margin-bottom: 30px;
-}
-
-.input-group {
-    margin-bottom: 25px;
-}
-
-.input-group label {
-    display: block;
-    color: var(--text-muted);
-    font-size: 0.9rem;
-    margin-bottom: 12px;
-    font-weight: 500;
-}
-
-/* Range Sliders */
-input[type=range] {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 100%;
-    background: transparent;
-    margin-bottom: 20px; /* Increased space between slider and box */
-}
-
-input[type=range]:focus { outline: none; }
-
-input[type=range]::-webkit-slider-runnable-track {
-    width: 100%;
-    height: 4px;
-    background: #333;
-    border-radius: 2px;
-}
-
-input[type=range]::-webkit-slider-thumb {
-    height: 18px;
-    width: 18px;
-    border-radius: 50%;
-    background: var(--purple);
-    cursor: pointer;
-    -webkit-appearance: none;
-    margin-top: -7px;
-    box-shadow: 0 0 10px rgba(155, 154, 255, 0.5);
-    transition: transform 0.1s;
-}
-
-input[type=range]::-webkit-slider-thumb:hover {
-    transform: scale(1.2);
-}
-
-/* Number Inputs */
-input[type=number], input[type=text] {
-    width: 100%;
-    background-color: var(--input-bg);
-    border: 1px solid #2c2c35;
-    color: white;
-    padding: 15px;
-    border-radius: 12px;
-    font-size: 1.1rem;
-    font-weight: 600;
-    box-sizing: border-box;
-    transition: border-color 0.2s;
-}
-
-input[type=number]:focus, input[type=text]:focus {
-    outline: none;
-    border-color: var(--purple);
-}
-
-/* Calculation Button */
-.calc-btn {
-    width: 100%;
-    background-color: var(--purple);
-    color: #121212;
-    border: none;
-    padding: 18px;
-    border-radius: 14px;
-    font-size: 1rem;
-    font-weight: 700;
-    letter-spacing: 1.2px;
-    cursor: pointer;
-    margin-top: 10px;
-    transition: all 0.2s;
-}
-
-.calc-btn:hover {
-    background-color: #b0afff;
-    box-shadow: 0 5px 15px rgba(155, 154, 255, 0.4);
-}
-
-.calc-btn:active {
-    transform: scale(0.97);
-}
-
-/* --- RESULTS CARD --- */
-.result-card {
-    background-color: var(--card-bg);
-    border-radius: 24px;
-    padding: 30px 25px;
-    text-align: center;
-    box-shadow: 0 15px 35px rgba(0,0,0,0.6);
-}
-
-.result-header-text {
-    font-size: 0.7rem;
-    color: var(--text-muted);
-    letter-spacing: 2px;
-    margin-bottom: 10px;
-    text-transform: uppercase;
-}
-
-.main-emi {
-    font-size: 3.5rem;
-    font-weight: 700;
-    color: var(--purple);
-    margin-bottom: 25px;
-}
-
-/* Chart Styles */
-.chart-container {
-    width: 180px;
-    height: 180px;
-    margin: 0 auto 30px auto;
-    position: relative;
-}
-
-/* Totals Layout */
-.totals-grid {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 25px;
-}
-
-.total-block {
-    text-align: left;
-    width: 46%;
-}
-
-.total-label {
-    font-size: 0.65rem;
-    color: var(--text-muted);
-    letter-spacing: 1px;
-    margin-bottom: 6px;
-    text-transform: uppercase;
-}
-
-.total-value {
-    font-size: 1.25rem;
-    font-weight: 700;
-    margin-bottom: 8px;
-}
-
-.total-value.yellow { color: var(--yellow); }
-.total-value.teal { color: var(--teal); }
-
-/* Progress Indicators */
-.progress-bar {
-    height: 4px;
-    border-radius: 2px;
-    width: 100%;
-    background-color: #333;
-}
-
-.yellow-bar-fill { background-color: var(--yellow); width: 40%; height: 100%; border-radius: 2px; }
-.teal-bar-fill { background-color: var(--teal); width: 100%; height: 100%; border-radius: 2px; }
-
-/* Metrics Footer */
-.metrics-footer {
-    display: flex;
-    justify-content: space-between;
-    font-size: 0.75rem;
-    color: #5a5a60;
-    border-top: 1px solid #2a2a30;
-    padding-top: 20px;
-}
-
-/* Save Section Styling */
-.save-section {
-    margin-top: 25px;
-    padding-top: 20px;
-    border-top: 1px dashed #333;
-}
-
-.save-section input {
-    margin-bottom: 12px;
-    font-size: 0.9rem;
-}
-
-.save-btn {
-    width: 100%;
-    background: #28a745;
-    color: white;
-    border: none;
-    padding: 12px;
-    border-radius: 10px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: background 0.2s;
-}
-
-.save-btn:hover { background: #218838; }
-
-/* --- FOOTER --- */
-.bottom-footer {
-    text-align: center;
-    margin-top: 50px;
-    font-size: 0.65rem;
-    color: #444;
-    letter-spacing: 1.5px;
-    line-height: 2;
-    text-transform: uppercase;
-}
-
-/* --- RESPONSIVE ADJUSTMENTS --- */
-@media (max-width: 480px) {
-    .main-emi { font-size: 2.8rem; }
-    .total-value { font-size: 1.1rem; }
-}
-
-</style>
-
-
 <body>
-<div class="container" style="text-align: center;">
-    <h2>🔐 Agent Login</h2>
-    <form method="POST">
-        <div class="form-group">
-            <input type="text" name="username" placeholder="Username" required>
+
+<div class="app-container">
+    <div class="header">
+        <div class="logo-section">
+            <div class="logo-icon">ॐ</div>
+            <div class="logo-text">
+                <h1>Vedic <span>FinCompute</span></h1>
+                <p>POWERED BY NIKHILAM NAVATASHCARAMAM DASHATAH</p>
+            </div>
         </div>
-        <div class="form-group">
-            <input type="password" name="password" placeholder="Password" required>
+        <div class="login-section">
+            {% if current_user.is_authenticated %}
+                <a href="{{ url_for('dashboard') }}" class="agent-link">{{ current_user.username }}</a>
+            {% else %}
+                <a href="{{ url_for('login') }}" class="agent-link">Agent Login</a>
+            {% endif %}
         </div>
-        <button type="submit">Login</button>
-    </form>
-    <p style="margin-top: 15px; font-size: 0.9rem; color: #aaa;">
-        New Agent? <a href="{{ url_for('register') }}" style="color: var(--primary);">Register Here</a>
-    </p>
+    </div>
+    
+    <div class="calculator-form">
+        <div class="input-group">
+            <label>🏦 Principal Amount (₹)</label>
+            <input type="range" id="pSlider" min="10000" max="10000000" step="5000" value="500000">
+            <input type="number" id="principal" value="500000">
+        </div>
+        
+        <div class="input-group">
+            <label>🧮 Annual Interest Rate (%)</label>
+            <input type="range" id="rSlider" min="1" max="25" step="0.1" value="8.5">
+            <input type="number" id="rate" step="0.1" value="8.5">
+        </div>
+        
+        <div class="input-group">
+            <label>🗓️ Tenure (Years)</label>
+            <input type="range" id="tSlider" min="1" max="30" step="1" value="5">
+            <input type="number" id="years" value="5">
+        </div>
+
+        <button class="calc-btn" onclick="calculateEMI()" id="calcBtn">CALCULATE EMI</button>
+    </div>
+
+    <div class="result-card" id="resultBox" style="display:none;">
+        <div class="result-header-text">ESTIMATED MONTHLY INSTALLMENT</div>
+        <div class="main-emi" id="emiDisplay">₹0</div>
+        
+        <div class="chart-container">
+            <canvas id="emiChart"></canvas>
+        </div>
+
+        <div class="totals-grid">
+            <div class="total-block">
+                <div class="total-label">PRINCIPAL AMOUNT</div>
+                <div class="total-value mustard" id="pDisp">₹0</div>
+                <div class="progress-bar mustard-bar"></div>
+            </div>
+            <div class="total-block">
+                <div class="total-label">TOTAL INTEREST</div>
+                <div class="total-value teal" id="iDisp">₹0</div>
+                <div class="progress-bar teal-bar"></div>
+            </div>
+        </div>
+
+        <div class="metrics-footer">
+            <div class="metric">Latency: <span id="lat">0 μs</span></div>
+            <div class="metric">Algorithm: Nikhilam Sutra (Vedic)</div>
+        </div>
+
+        {% if current_user.is_authenticated %}
+        <div class="save-section">
+            <input type="text" id="cName" placeholder="Client Name">
+            <input type="text" id="cPhone" placeholder="Client Phone">
+            <button class="save-btn" onclick="saveData()">Save Record</button>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="bottom-footer">
+        NIKHILAM NAVATASHCARAMAM DASHATAH<br>
+        HIGH PRECISION CALCULATIONS FOR MODERN FINANCE
+    </div>
 </div>
+
+
+
+<script>
+    let emiChart;
+
+    // --- Slider & Input Synchronization ---
+    function setupSync(sliderId, inputId) {
+        const s = document.getElementById(sliderId);
+        const n = document.getElementById(inputId);
+        s.oninput = () => { n.value = s.value; };
+        n.oninput = () => { s.value = n.value; };
+        s.onchange = calculateEMI; // Auto-calculate on slider release
+        n.onchange = calculateEMI;
+    }
+
+    setupSync('pSlider', 'principal');
+    setupSync('rSlider', 'rate');
+    setupSync('tSlider', 'years');
+
+    // --- Core Calculation Call ---
+    async function calculateEMI() {
+        const p = parseFloat(document.getElementById('principal').value);
+        const r = parseFloat(document.getElementById('rate').value);
+        const t = parseFloat(document.getElementById('years').value);
+        
+        if(!p || !r || !t) return;
+
+        try {
+            const res = await fetch('/calculate/emi', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ principal: p, rate: r, years: t })
+            });
+
+            const data = await res.json();
+            const totalInterest = (data.emi * t * 12) - p;
+
+            // Update UI Numbers
+            document.getElementById('resultBox').style.display = 'block';
+            document.getElementById('emiDisplay').innerText = "₹" + Math.round(data.emi).toLocaleString('en-IN');
+            document.getElementById('pDisp').innerText = "₹" + p.toLocaleString('en-IN');
+            document.getElementById('iDisp').innerText = "₹" + Math.round(totalInterest).toLocaleString('en-IN');
+            document.getElementById('lat').innerText = data.latency_microseconds + " μs";
+            
+            // Update Donut Chart
+            updateDonut(p, totalInterest);
+            
+        } catch (e) { console.error("Calc Error:", e); }
+    }
+
+    // --- Chart.js Donut Logic ---
+    function updateDonut(principal, interest) {
+        const ctx = document.getElementById('emiChart').getContext('2d');
+        if (emiChart) {
+            emiChart.data.datasets[0].data = [principal, interest];
+            emiChart.update();
+        } else {
+            emiChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Principal', 'Interest'],
+                    datasets: [{
+                        data: [principal, interest],
+                        backgroundColor: ['#e1ad01', '#00e5ff'], // Mustard and Teal
+                        borderWidth: 0,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    cutout: '75%', // Creates the thin ring look
+                    plugins: { legend: { display: false } },
+                    animation: { animateScale: true }
+                }
+            });
+        }
+    }
+
+    // --- Save Data Logic ---
+    async function saveData() {
+        const name = document.getElementById('cName').value;
+        const phone = document.getElementById('cPhone').value;
+        const emiVal = document.getElementById('emiDisplay').innerText.replace(/[₹,]/g, '');
+        
+        if(!name || !phone) { alert("Enter client details"); return; }
+
+        const res = await fetch('/save_client', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                name, phone, emi: parseFloat(emiVal),
+                principal: document.getElementById('principal').value,
+                rate: document.getElementById('rate').value,
+                years: document.getElementById('years').value
+            })
+        });
+        if(res.ok) window.location.href = "/dashboard";
+    }
+</script>
 </body>
 </html>
