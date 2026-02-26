@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Dashboard - Vedic Bank</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; color: #ddd; }
+        th, td { padding: 12px; border-bottom: 1px solid #444; text-align: left; }
+        th { color: var(--primary); }
+        .nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .btn-small { padding: 5px 10px; font-size: 0.8rem; width: auto; }
+    </style>
+</head>
+<body>
+<div class="container" style="max-width: 800px;">
+    <div class="nav">
+        <h2>📊 Agent Dashboard</h2>
+        <div>
+            <span style="color: #aaa; margin-right: 10px;">Hello, {{ user.username }}</span>
+            <a href="{{ url_for('home') }}"><button class="btn-small">New Calculation</button></a>
+            <a href="{{ url_for('logout') }}"><button class="btn-small" style="background: #444;">Logout</button></a>
+        </div>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Client Name</th>
+                <th>Phone</th>
+                <th>Loan Amount</th>
+                <th>EMI</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for client in clients %}
+            <tr>
+                <td>{{ client.name }}</td>
+                <td>{{ client.phone }}</td>
+                <td>₹ {{ "{:,.2f}".format(client.principal) }}</td>
+                <td style="color: var(--primary);">₹ {{ "{:,.2f}".format(client.emi) }}</td>
+            </tr>
+            {% else %}
+            <tr><td colspan="4" style="text-align:center;">No clients recorded yet.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

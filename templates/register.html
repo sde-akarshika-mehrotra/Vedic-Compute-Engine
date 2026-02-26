@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Register - Vedic Bank</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<div class="container" style="text-align: center; max-width: 400px; margin-top: 50px;">
+    <h2 style="color: var(--primary);">📝 Agent Registration</h2>
+    
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div style="background: #333; color: #ff4444; padding: 10px; margin-bottom: 15px; border-radius: 5px;">
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <form method="POST" action="{{ url_for('register') }}">
+        <div class="form-group">
+            <label style="text-align: left;">Choose Username</label>
+            <input type="text" name="username" placeholder="e.g. agent007" required>
+        </div>
+        
+        <div class="form-group">
+            <label style="text-align: left;">Choose Password</label>
+            <input type="password" name="password" placeholder="******" required>
+        </div>
+
+        <button type="submit">Create Account</button>
+    </form>
+
+    <p style="margin-top: 20px; color: #aaa;">
+        Already have an account? <a href="{{ url_for('login') }}" style="color: var(--primary);">Login here</a>
+    </p>
+</div>
+</body>
+</html>

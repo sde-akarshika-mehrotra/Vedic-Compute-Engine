@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vedic Financial Engine</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<div class="container">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h2 style="margin: 0;">🕉️ Vedic FinCompute</h2>
+        <div style="font-size: 0.8rem;">
+            {% if current_user.is_authenticated %}
+                <span style="color: #888;">Agent: {{ current_user.username }}</span> | 
+                <a href="{{ url_for('dashboard') }}" style="color: var(--primary);">Dashboard</a> | 
+                <a href="{{ url_for('logout') }}" style="color: #aaa;">Logout</a>
+            {% else %}
+                <a href="{{ url_for('login') }}" style="color: var(--primary);">Agent Login</a>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div class="subtitle">Powered by Nikhilam Navatashcaramam Dashatah</div>
+    
+    <div class="form-group">
+        <label>Principal Amount (₹)</label>
+        <input type="number" id="principal" value="500000" placeholder="e.g. 500000">
+    </div>
+    
+    <div class="form-group">
+        <label>Annual Interest Rate (%)</label>
+        <input type="number" id="rate" step="0.1" value="8.5" placeholder="e.g. 8.5">
+    </div>
+    
+    <div class="form-group">
+        <label>Tenure (Years)</label>
+        <input type="number" id="years" value="5" placeholder="e.g. 5">
+    </div>
+
+    <button onclick="calculateEMI()">Calculate EMI</button>
+
+    <div class="result-box" id="resultBox">
+        <div class="result-header">Estimated Monthly Installment</div>
+        <div class="emi-value" id="emiDisplay">₹0.00</div>
+        
+        <div class="metrics-grid">
+            <div class="metric-item">
+                Latency
+                <span class="metric-value" id="latencyDisplay">0 μs</span>
+            </div>
+            <div class="metric-item">
+                Algorithm
+                <span class="badge">Nikhilam Sutra</span>
+            </div>
+            <div class="metric-item" style="grid-column: span 2; margin-top: 5px;">
+                Precision
+                <span class="metric-value">High-Scale Integer (10⁵)</span>
+            </div>
+        </div>
+
+        <div id="saveSection" style="margin-top: 20px; border-top: 1px solid #444; padding-top: 15px; display:none;">
+            {% if current_user.is_authenticated %}
+                <label style="margin-bottom: 5px; display:block;">Save Client Record</label>
+                <input type="text" id="clientName" placeholder="Client Name" style="margin-bottom: 10px;">
+                <input type="text" id="clientPhone" placeholder="Client Phone" style="margin-bottom: 10px;">
+                <button onclick="saveClientData()" style="background: #138808;">💾 Save to Database</button>
+            {% else %}
+                <p style="font-size: 0.8rem; color: #aaa; text-align: center; margin-top: 10px;">
+                    <a href="{{ url_for('login') }}" style="color: var(--primary);">Login</a> as an agent to save this quote.
+                </p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+    async function calculateEMI() {
+        const p = document.getElementById('principal').value;
+        const r = document.getElementById('rate').value;
+        const t = document.getElementById('years').value;
+        const resultBox = document.getElementById('resultBox');
+        const emiDisplay = document.getElementById('emiDisplay');
+        const saveSection = document.getElementById('saveSection');
+
+        if(!p || !r || !t) {
+            alert("Please fill in all fields");
+            return;
+        }
+
+        // Show loading state
+        emiDisplay.innerText = "Computing...";
+        resultBox.style.display = 'block';
+        saveSection.style.display = 'none'; // Hide save button while calculating
+
+        try {
+            const response = await fetch('/calculate/emi', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ principal: p, rate: r, years: t })
+            });
+
+            const data = await response.json();
+
+            if (data.error) {
+                alert("Error: " + data.error);
+                return;
+            }
+
+            // Update UI
+            emiDisplay.innerText = "₹ " + data.emi.toLocaleString('en-IN');
+            document.getElementById('latencyDisplay').innerText = data.latency_microseconds + " μs";
+            
+            // Show Save Section after successful calculation
+            saveSection.style.display = 'block';
+            
+        } catch (error) {
+            console.error("Error:", error);
+            alert("Failed to connect to Vedic Engine.");
+        }
+    }
+
+    async function saveClientData() {
+        const name = document.getElementById('clientName').value;
+        const phone = document.getElementById('clientPhone').value;
+        // Clean the EMI text to get just the number
+        const emiText = document.getElementById('emiDisplay').innerText.replace('₹ ', '').replace(/,/g, '');
+        
+        if(!name || !phone) { alert("Please enter client details"); return; }
+
+        try {
+            const response = await fetch('/save_client', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    name: name,
+                    phone: phone,
+                    principal: document.getElementById('principal').value,
+                    rate: document.getElementById('rate').value,
+                    years: document.getElementById('years').value,
+                    emi: parseFloat(emiText)
+                })
+            });
+            
+            if(response.ok) {
+                alert("Client Saved Successfully!");
+                window.location.href = "/dashboard";
+            } else {
+                alert("Error saving data");
+            }
+        } catch (error) {
+            console.error(error);
+            alert("Network error");
+        }
+    }
+</script>
+
+</body>
+</html>
