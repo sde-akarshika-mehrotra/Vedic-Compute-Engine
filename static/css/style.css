@@ -136,3 +136,16 @@ input[type=number]:focus { border-color: var(--mustard); outline: none; backgrou
     display: flex; justify-content: space-between; font-size: 0.75rem;
     color: #52525b; border-top: 1px solid #27272a; padding-top: 25px;
 }
+.save-btn{
+    margin-top: 50px;
+    background-color: #4CAF50; /* Green background */
+    color: white; /* White text */
+    padding: 12px 24px; /* Spacing */
+    font-size: 16px;
+    font-weight: 600;
+    border: none; /* Remove default border */
+    border-radius: 6px; /* Rounded corners */
+    cursor: pointer; /* Pointer on hover */
+    transition: all 0.3s ease; /* Smooth hover effect */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
